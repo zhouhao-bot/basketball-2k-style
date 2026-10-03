@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>篮球2K风格游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .title {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-wrapper {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            background: linear-gradient(180deg, #2d5016 0%, #1a3a0f 100%);
+            border: 3px solid #ffd700;
+            border-radius: 10px;
+            display: block;
+            flex: 1;
+            min-width: 400px;
+            cursor: crosshair;
+        }
+
+        .info-panel {
+            flex: 0 0 250px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .score-board {
+            background: #000;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .team-score {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .team-name {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .timer {
+            font-size: 24px;
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .stats {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+            font-size: 14px;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #aaa;
+        }
+
+        .stat-value {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .controls {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-title {
+            font-size: 14px;
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .control-item {
+            font-size: 12px;
+            color: #aaa;
+            padding: 5px 0;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            background: #ffd700;
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+        }
+
+        button:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 15px;
+            color: #ffd700;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .possession {
+            color: #4db8ff;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .game-wrapper {
+                flex-direction: column;
+            }
+            
+            canvas {
+                min-width: 100%;
+            }
+
+            .info-panel {
+                flex: 1;
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🏀 篮球2K风格游戏</h1>
+        
+        <div class="game-wrapper">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            
+            <div class="info-panel">
+                <div class="score-board">
+                    <div class="team-score">
+                        <div>
+                            <div class="team-name">你的队伍</div>
+                            <div class="score" id="playerScore">0</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="team-name">对方队伍</div>
+                            <div class="timer" id="opponentScore">0</div>
+                        </div>
+                    </div>
+                    <div class="timer">⏱️ <span id="timer">12:00</span></div>
+                </div>
+
+                <div class="stats">
+                    <div class="control-title">📊 比赛数据</div>
+                    <div class="stat-item">
+                        <span class="stat-label">投篮命中率</span>
+                        <span class="stat-value" id="shootAccuracy">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">投篮总数</span>
+                        <span class="stat-value" id="shootCount">0/0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">助攻</span>
+                        <span class="stat-value" id="assists">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">篮板</span>
+                        <span class="stat-value" id="rebounds">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">抢断</span>
+                        <span class="stat-value" id="steals">0</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="control-title">⌨️ 操作说明</div>
+                    <div class="control-item">• <strong>移动：</strong> W/A/S/D 或 ↑↓←→</div>
+                    <div class="control-item">• <strong>投篮：</strong> 左键点击 + 按 SPACE</div>
+                    <div class="control-item">• <strong>传球：</strong> P 键</div>
+                    <div class="control-item">• <strong>防守：</strong> 靠近对手即可</div>
+                </div>
+
+                <div class="buttons">
+                    <button onclick="togglePause()">⏸️ 暂停</button>
+                    <button onclick="resetGame()">🔄 重新开始</button>
+                </div>
+
+                <div class="status">
+                    <div id="gameStatus">比赛进行中...</div>
+                    <div class="possession" id="possession">球权: 你的队伍</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

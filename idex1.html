@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D 篮球游戏</title>
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #111827;
+      --gold: #facc15;
+      --blue: #60a5fa;
+      --red: #f87171;
+      --panel: rgba(15, 23, 42, 0.8);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #game-shell {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #renderCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: linear-gradient(#1d4ed8, #0f172a);
+    }
+
+    #hud {
+      position: absolute;
+      inset: 18px 18px auto 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .score-panel {
+      background: rgba(2, 6, 23, 0.6);
+      border: 2px solid rgba(250, 204, 21, 0.8);
+      border-radius: 16px;
+      padding: 12px 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .score-blue { color: var(--blue); }
+    .score-red { color: var(--red); }
+    .colon { color: #e2e8f0; }
+
+    #timer {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
+    #status {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      color: #f8fafc;
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    .controls {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #dbeafe;
+      line-height: 1.7;
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    .controls strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <div id="game-shell">
+    <canvas id="renderCanvas"></canvas>
+
+    <div id="hud">
+      <div class="score-panel">
+        <div class="score-row">
+          <span class="score-blue">你</span>
+          <span id="playerScore" class="score-blue">0</span>
+          <span class="colon">:</span>
+          <span id="enemyScore" class="score-red">0</span>
+          <span class="score-red">敌方</span>
+        </div>
+      </div>
+      <div class="score-panel" id="timer">60</div>
+    </div>
+
+    <div id="status">状态：比赛中</div>
+
+    <div class="controls">
+      <div><strong>WASD</strong> / <strong>方向键</strong>：移动</div>
+      <div><strong>空格</strong>：投篮</div>
+      <div><strong>鼠标点击</strong>：投篮</div>
+      <div><strong>R</strong>：重置</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
